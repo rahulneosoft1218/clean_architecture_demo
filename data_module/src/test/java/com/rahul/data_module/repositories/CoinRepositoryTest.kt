@@ -1,38 +1,46 @@
 package com.rahul.data_module.repositories
 
-import com.rahul.data_module.di.DataModule
+import com.rahul.data_module.di.DataComponent
 import com.rahul.data_module.models.requests.GetAllCoinRequest
-import kotlinx.coroutines.*
-import org.junit.Before
+import com.rahul.data_module.models.requests.GetCoinDetailRequest
+import com.rahul.data_module.source.ResultWrapper
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import javax.inject.Inject
-
-public class CoinRepositoryTest{
-   private val request = GetAllCoinRequest("usd","market_cap_desc",1,2,false)
 
 
-    @Inject
-    lateinit var repository : CoinRepository
+class CoinRepositoryTest : TestRepository() {
 
-    @Before
-    fun setUp(){
-        val dataModule = DataModule()
-        repository = CoinRepository(dataModule.provideApiService(dataModule.provideOkhttpClient()))
-//        val component = Dag
+    private lateinit var repository: CoinRepository
 
 
+    override fun onCreate(dataComponent: DataComponent) {
+        repository = dataComponent.getCoinRepository()
     }
 
     @Test
-    fun getAllCoinTest(): Unit = runBlocking{
+    fun `api-(get all coins)`() {
 
-        launch(Dispatchers.IO) {
-            val data = repository.getAllCoins(request)
-
+        val request = GetAllCoinRequest(
+            "usd",
+            "market_cap_desc",
+            1,
+            2,
+            false
+        )
+        val data = executeApi { repository.getAllCoins(request) }
+        if (data is ResultWrapper.Success) {
+            assertThat("All Coins found!", data.value.isNotEmpty())
         }
+    }
 
+    @Test
+    fun `api-(get all detail)`() {
 
-
+        val request = GetCoinDetailRequest("ethereum")
+        val data = executeApi { repository.getCoinDetail(request) }
+        if (data is ResultWrapper.Success) {
+            assertThat("Coin Detail found!", data.value.id == "ethereum")
+        }
     }
 
 

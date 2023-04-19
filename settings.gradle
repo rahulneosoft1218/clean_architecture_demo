@@ -16,3 +16,4 @@ rootProject.name = "CleanDemo"
 include ':app'
 include ':core'
 include ':data_module'
+include ':domain_module'

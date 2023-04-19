@@ -9,24 +9,22 @@ import okhttp3.logging.HttpLoggingInterceptor
 @dagger.Module
 class DataModule {
 
+
     @Provides
-    fun provideApiService(okHttpClient: OkHttpClient):ApiService{
-        return RetrofitApiClient("https://api.coingecko.com/api/v3/",okHttpClient).getApiService()
+    fun provideApiService(okHttpClient: OkHttpClient): ApiService {
+        return RetrofitApiClient("https://api.coingecko.com/api/v3/", okHttpClient).getApiService()
     }
 
     @Provides
-    fun provideOkhttpClient():OkHttpClient{
+    fun provideOkhttpClient(): OkHttpClient {
         val httpLogging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-        return OkHttpClient().newBuilder()
+        return OkHttpClient()
+            .newBuilder()
             .addInterceptor(httpLogging)
             .build()
     }
-
-
-
-
 
 
 }
