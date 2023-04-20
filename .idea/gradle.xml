@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/data_module" />
             <option value="$PROJECT_DIR$/domain_module" />
+            <option value="$PROJECT_DIR$/present_module" />
           </set>
         </option>
       </GradleProjectSettings>

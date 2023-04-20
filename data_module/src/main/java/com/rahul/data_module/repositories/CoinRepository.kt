@@ -1,5 +1,6 @@
 package com.rahul.data_module.repositories
 
+import com.rahul.data_module.di.DataScope
 import com.rahul.data_module.models.requests.GetAllCoinRequest
 import com.rahul.data_module.models.requests.GetCoinDetailRequest
 import com.rahul.data_module.models.response.CoinEntity
@@ -9,11 +10,12 @@ import com.rahul.data_module.source.ResultWrapper
 import com.rahul.data_module.source.exceptions.ApiException
 import javax.inject.Inject
 
-class CoinRepository @Inject constructor(private val apiService: ApiService) {
+@DataScope
+class CoinRepository @Inject constructor(private val apiService: ApiService) : DataRepository() {
 
 
     suspend fun getAllCoins(request: GetAllCoinRequest): ResultWrapper<ApiException, List<CoinEntity>> {
-        return ResultWrapper.build {
+        return executeApi {
             apiService.getAllCoins(
                 request.path,
                 request.currency,
@@ -26,10 +28,8 @@ class CoinRepository @Inject constructor(private val apiService: ApiService) {
     }
 
     suspend fun getCoinDetail(request: GetCoinDetailRequest): ResultWrapper<ApiException, CoinEntityDetail> {
-        return ResultWrapper.build {
-            apiService.getCoinDetail(
-                request.path
-            )
+        return executeApi {
+            apiService.getCoinDetail(request.path)
         }
     }
 

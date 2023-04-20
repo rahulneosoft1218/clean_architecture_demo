@@ -6,5 +6,5 @@ data class GetAllCoinRequest(
     val perPage: Int,
     val page: Int,
     val sparkline: Boolean
-) : ApisRequest("coins/markets")
+) : ApisRequest("api/v3/coins/markets")
 

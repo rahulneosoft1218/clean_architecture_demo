@@ -2,42 +2,27 @@ package com.rahul.domain_module.core
 
 import com.rahul.data_module.source.ResultWrapper
 import com.rahul.data_module.source.exceptions.ApiException
-import com.rahul.domain_module.exceptions.DomainErrors
 import com.rahul.domain_module.exceptions.DomainExceptions
+import com.rahul.domain_module.exceptions.DomainExceptions.Companion.mapDomainException
 
 open class UseCaseBuilder<Result, Response> {
 
-    protected fun ResultWrapper<ApiException, Result>.mapResponse(useCaseDataMapper: UseCaseDataMapper<Result, Response>): ResultWrapper<DomainExceptions, Response> {
+    private fun ResultWrapper<ApiException, Result>.mapResponse(useCaseDataMapper: UseCaseDataMapper<Result, Response>): UseCaseWrapper<DomainExceptions, Response> {
 
         return when (this) {
-            is ResultWrapper.Success -> ResultWrapper.Success(
-                useCaseDataMapper.mapResultWithData(
-                    this.value
-                )
-            )
-            is ResultWrapper.Error -> mapToDomainException(this.error)
+            is ResultWrapper.Success -> {
+                val mappedResult = useCaseDataMapper.mapResultWithData(this.value)
+                UseCaseWrapper.Success(mappedResult)
+            }
+            is ResultWrapper.Error -> UseCaseWrapper.Error(error.mapDomainException())
         }
     }
 
-    private fun mapToDomainException(error: ApiException): ResultWrapper<DomainExceptions, Response> {
-        val message = error.errorMsg ?: "Unknown Error"
-        val domainException: DomainExceptions = when (error) {
-            is ApiException.NoInternetConnection -> DomainExceptions(
-                DomainErrors.NO_INTERNET,
-                message
-            )
-            is ApiException.BadRequestException -> DomainExceptions(
-                DomainErrors.BAD_REQUEST,
-                message
-            )
-            is ApiException.InternalServerException -> DomainExceptions(
-                DomainErrors.INTERNAL_SERVER,
-                message
-            )
-            is ApiException.UnknownException -> DomainExceptions(DomainErrors.EXCEPTION, message)
-        }
-
-        return ResultWrapper.Error(domainException)
+    protected suspend fun executeUseCase(
+        useCaseDataMapper: UseCaseDataMapper<Result, Response>,
+        dataCall: suspend () -> ResultWrapper<ApiException, Result>
+    ): UseCaseWrapper<DomainExceptions, Response> {
+        return dataCall.invoke().mapResponse(useCaseDataMapper)
     }
 
 

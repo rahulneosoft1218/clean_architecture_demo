@@ -40,7 +40,10 @@ sealed class ApiException(val resCode: Int, open val errorMsg: String?) : Throwa
 
             return when (val resCode = this.code()) {
                 500 -> InternalServerException
-                400 -> BadRequestException(this.message)
+                400,404 -> {
+                    val errorRes = this.response()?.errorBody()?.string()
+                    BadRequestException(errorRes)
+                }
                 else -> {
                     UnknownException(resCode, this.message)
                 }
