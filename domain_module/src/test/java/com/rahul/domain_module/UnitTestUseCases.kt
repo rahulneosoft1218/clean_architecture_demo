@@ -1,14 +1,9 @@
 package com.rahul.domain_module
 
-import com.rahul.data_module.di.DaggerDataComponent
-import com.rahul.data_module.di.DataModule
-import com.rahul.data_module.source.ResultWrapper
 import com.rahul.domain_module.core.UseCaseWrapper
-import com.rahul.domain_module.di.DaggerDomainComponent
-import com.rahul.domain_module.di.DomainComponent
 import com.rahul.domain_module.exceptions.DomainExceptions
-import com.rahul.domain_module.exceptions.DomainExceptions.Companion.mapDomainException
-import kotlinx.coroutines.*
+import com.rahul.domain_module.usecases.TestUseCases
+import kotlinx.coroutines.Job
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
@@ -16,48 +11,18 @@ import org.junit.After
 import org.junit.Before
 
 
-abstract class TestUseCases {
+abstract class UnitTestUseCases : TestUseCases() {
 
     private val jobs = ArrayList<Job>()
 
-    abstract fun onCreate(domainComponent: DomainComponent)
 
     @Before
-    fun init() {
-
-        val dataComponent = DaggerDataComponent
-            .builder()
-            .dataModule(DataModule("https://api.coingecko.com/"))
-            .build()
-
-
-        val domainComponent: DomainComponent = DaggerDomainComponent
-            .builder()
-            .dataComponent(dataComponent)
-            .build()
-
-
-        onCreate(domainComponent)
+    override fun onCreate() {
+        super.onCreate()
     }
 
 
-    fun <T> executeUseCase(useCase: suspend () -> UseCaseWrapper<DomainExceptions, T>): UseCaseWrapper<DomainExceptions, T> =
-        runBlocking {
-            val useCaseCall: Deferred<UseCaseWrapper<DomainExceptions, T>> = async(Dispatchers.IO) {
-                useCase.invoke()
-            }
-
-            jobs.add(useCaseCall)
-            return@runBlocking try {
-                useCaseCall.await()
-            } catch (th: Throwable) {
-                UseCaseWrapper.Error(th.mapDomainException())
-            }
-
-        }
-
-
-    fun <T> checkUseCondition(
+   override fun <T> checkUseCondition(
         message: String,
         useCaseWrapper: UseCaseWrapper<DomainExceptions, T>,
         match: (UseCaseWrapper<DomainExceptions, T>) -> Boolean
@@ -94,7 +59,7 @@ abstract class TestUseCases {
     }
 
     @After
-    fun onTerminate() {
+    override fun onTerminate() {
         jobs.forEach {
             it.cancel()
         }

@@ -2,7 +2,10 @@ package com.rahul.present_mobile
 
 
 import com.rahul.domain_module.core.UseCaseWrapper
- import com.rahul.domain_module.exceptions.DomainExceptions
+import com.rahul.domain_module.di.DaggerDomainComponent
+import com.rahul.domain_module.di.DomainComponent
+import com.rahul.domain_module.exceptions.DomainExceptions
+import com.rahul.present_mobile.di.DaggerViewModelComponent
 import com.rahul.present_mobile.di.ViewModelComponent
 import kotlinx.coroutines.*
 import org.junit.After
@@ -18,10 +21,20 @@ abstract class TestViewModels {
     @Before
     fun init() {
 
+//        val dataComponent = DaggerDataComponent
+//            .builder()
+//            .dataModule(DataModule("https://api.coingecko.com/"))
+//            .build()
 
-//
+//        val domainComponent: DomainComponent = DaggerDomainComponent
+//            .builder()
+//            .dataComponent(dataComponent)
+//            .build()
+
 //        val viewModelComponent: ViewModelComponent =
-//            Dagger.builder().build()
+//            DaggerViewModelComponent.builder()
+//                .domainComponent(domainComponent)
+//                .build()
 //
 //        onCreate(viewModelComponent)
     }

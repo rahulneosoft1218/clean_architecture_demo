@@ -1,12 +1,7 @@
 package com.rahul.data_module.repositories
 
-import com.rahul.data_module.di.DaggerDataComponent
-import com.rahul.data_module.di.DataComponent
-import com.rahul.data_module.di.DataModule
 import com.rahul.data_module.source.ResultWrapper
 import com.rahul.data_module.source.exceptions.ApiException
-import com.rahul.data_module.source.exceptions.ApiException.Companion.mapToApiException
-import kotlinx.coroutines.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
@@ -14,41 +9,15 @@ import org.junit.After
 import org.junit.Before
 
 
-abstract class TestRepository {
+abstract class UnitTestRepositories : TestDataRepositories() {
 
-    private val jobs = ArrayList<Job>()
-
-    abstract fun onCreate(dataComponent: DataComponent)
 
     @Before
-    fun init() {
-
-        val dataComponent: DataComponent = DaggerDataComponent
-            .builder()
-            .dataModule(DataModule("https://api.coingecko.com/"))
-            .build()
-
-        onCreate(dataComponent)
+    override fun onCreate() {
+        super.onCreate()
     }
 
-
-    fun <T> executeApi(api: suspend () -> ResultWrapper<ApiException, T>): ResultWrapper<ApiException, T> =
-        runBlocking {
-            val apiCall: Deferred<ResultWrapper<ApiException, T>> = async(Dispatchers.IO) {
-                api.invoke()
-            }
-
-            jobs.add(apiCall)
-            return@runBlocking try {
-                apiCall.await()
-            } catch (th: Throwable) {
-                ResultWrapper.Error(th.mapToApiException())
-            }
-
-        }
-
-
-    fun <T> checkApiCondition(
+    override fun <T> checkApiCondition(
         message: String,
         resultWrapper: ResultWrapper<ApiException, T>,
         match: (ResultWrapper<ApiException, T>) -> Boolean
@@ -84,10 +53,8 @@ abstract class TestRepository {
 
 
     @After
-    fun onTerminate() {
-        jobs.forEach {
-            it.cancel()
-        }
+    override fun onTerminate() {
+        super.onTerminate()
     }
 
 

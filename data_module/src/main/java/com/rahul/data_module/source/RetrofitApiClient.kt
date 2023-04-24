@@ -7,10 +7,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RetrofitApiClient @Inject constructor(baseUrl: String, client: OkHttpClient) {
+class RetrofitApiClient @Inject constructor(apiUrl: String, client: OkHttpClient) {
 
     private val apiService: ApiService = Retrofit.Builder()
-        .baseUrl(baseUrl)
+        .baseUrl(apiUrl)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build().create(ApiService::class.java)

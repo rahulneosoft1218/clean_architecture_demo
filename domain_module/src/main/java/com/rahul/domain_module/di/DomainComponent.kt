@@ -1,19 +1,34 @@
 package com.rahul.domain_module.di
 
-import com.rahul.data_module.di.DataComponent
+import com.rahul.data_module.di.DataScope
 import com.rahul.domain_module.usecases.GetAllCoinsUseCase
 import com.rahul.domain_module.usecases.GetCoinsDetailUseCase
+import com.rahul.domain_module.usecases.TestUseCases
+import dagger.BindsInstance
 import dagger.Component
+import okhttp3.Interceptor
+import javax.inject.Named
 
-@DomainScope
-@Component(dependencies = [DataComponent::class])
+@DataScope
+@Component(modules = [DomainModule::class])
 interface DomainComponent {
 
 
-    @DomainScope
+    @DataScope
     fun getAllCoinUseCase(): GetAllCoinsUseCase
 
-    @DomainScope
+    @DataScope
     fun getCoinDetailUseCase(): GetCoinsDetailUseCase
+
+    @Component.Factory
+    interface Factory {
+        fun create(
+            @Named("baseUrl") @BindsInstance baseUrl: String,
+            @BindsInstance interceptors: List<Interceptor>?,
+        ): DomainComponent
+    }
+
+    @DataScope
+    fun inject(testUseCases : TestUseCases)
 
 }

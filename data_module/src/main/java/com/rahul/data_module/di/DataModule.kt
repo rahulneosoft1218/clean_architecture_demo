@@ -1,27 +1,31 @@
 package com.rahul.data_module.di
 
- import com.rahul.data_module.source.ApiService
+import com.rahul.data_module.source.ApiService
 import com.rahul.data_module.source.RetrofitApiClient
+import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Singleton
 
-@dagger.Module
-class DataModule constructor(
-    private val baseUrl: String,
-    private val extraInterceptors: List<Interceptor>? = null
-) {
+@Module
+class DataModule @Inject constructor() {
 
     @Provides
     @DataScope
-    fun provideApiService(okHttpClient: OkHttpClient): ApiService {
+    fun provideApiService(
+        @Named("baseUrl") baseUrl: String,
+        okHttpClient: OkHttpClient
+    ): ApiService {
         return RetrofitApiClient(baseUrl, okHttpClient).getApiService()
     }
 
     @Provides
     @DataScope
-    fun provideOkhttpClient(): OkHttpClient {
+    fun provideOkhttpClient(extraInterceptors: List<Interceptor>?): OkHttpClient {
         val httpLogging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }

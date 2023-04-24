@@ -8,12 +8,9 @@ class GetAllCoinDataMapper : UseCaseDataMapper<List<CoinEntity>, List<GetAllCoin
     override fun mapResultWithData(result: List<CoinEntity>?): List<GetAllCoinResponse> {
         val response = ArrayList<GetAllCoinResponse>()
 
-        result?.forEach {
-            it.mapCoinEntityToResponse()?.let { response.add(it) }
+        result?.forEach { ce ->
+            ce.mapCoinEntityToResponse()?.let { response.add(it) }
         }
-
-
-
         return response
     }
 

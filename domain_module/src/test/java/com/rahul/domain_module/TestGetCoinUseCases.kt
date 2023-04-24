@@ -1,22 +1,15 @@
 package com.rahul.domain_module
 
 import com.rahul.domain_module.core.UseCaseWrapper
-import com.rahul.domain_module.di.DomainComponent
 import com.rahul.domain_module.params.GetCoinDetailParam
 import com.rahul.domain_module.usecases.GetAllCoinsUseCase
 import com.rahul.domain_module.usecases.GetCoinsDetailUseCase
 import org.junit.Test
+import javax.inject.Inject
 
-class TestGetCoinUseCases : TestUseCases() {
-
-    private lateinit var getAllCoinsUseCase: GetAllCoinsUseCase
-    private lateinit var getCoinsDetailUseCase: GetCoinsDetailUseCase
+class TestGetCoinUseCases : UnitTestUseCases() {
 
 
-    override fun onCreate(domainComponent: DomainComponent) {
-        getAllCoinsUseCase = domainComponent.getAllCoinUseCase()
-        getCoinsDetailUseCase = domainComponent.getCoinDetailUseCase()
-    }
 
     @Test
     fun `useCase-(get all coins)`() {
@@ -50,7 +43,8 @@ class TestGetCoinUseCases : TestUseCases() {
     @Test
     fun `useCase-(get coin detail - coin not found)`() {
 
-        val data = executeUseCase { getCoinsDetailUseCase.buildUseCase(GetCoinDetailParam("ethereum11")) }
+        val data =
+            executeUseCase { getCoinsDetailUseCase.buildUseCase(GetCoinDetailParam("ethereum11")) }
 
         checkUseCondition("Coin Detail not found!", data) { result ->
             if (result is UseCaseWrapper.Error) {

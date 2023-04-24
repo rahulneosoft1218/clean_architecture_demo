@@ -1,21 +1,13 @@
 package com.rahul.data_module.repositories
 
-import com.rahul.data_module.di.DataComponent
 import com.rahul.data_module.models.requests.GetAllCoinRequest
 import com.rahul.data_module.models.requests.GetCoinDetailRequest
 import com.rahul.data_module.source.ResultWrapper
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
 
-class CoinRepositoryTest : TestRepository() {
+internal class CoinRepositoryTest : UnitTestRepositories() {
 
-    private lateinit var repository: CoinRepository
-
-
-    override fun onCreate(dataComponent: DataComponent) {
-        repository = dataComponent.getCoinRepository()
-    }
 
     @Test
     fun `api-(get all coins)`() {
@@ -29,7 +21,7 @@ class CoinRepositoryTest : TestRepository() {
         )
 
 
-        val data = executeApi { repository.getAllCoins(request) }
+        val data = executeApi { coinRepository.getAllCoins(request) }
 
         checkApiCondition("All Coins Found", data) { result ->
             if (result is ResultWrapper.Success) {
@@ -54,7 +46,7 @@ class CoinRepositoryTest : TestRepository() {
         )
 
 
-        val data = executeApi { repository.getAllCoins(request) }
+        val data = executeApi { coinRepository.getAllCoins(request) }
         checkApiCondition("Invalid currency", data) { result ->
             if (result is ResultWrapper.Error) {
                 return@checkApiCondition result.error.errorMsg?.equals("invalid vs_currency") == true
@@ -70,7 +62,7 @@ class CoinRepositoryTest : TestRepository() {
     fun `api-(get coin detail)`() {
 
         val request = GetCoinDetailRequest("ethereum")
-        val data = executeApi { repository.getCoinDetail(request) }
+        val data = executeApi { coinRepository.getCoinDetail(request) }
 
         checkApiCondition("Coin Detail found!", data) { result ->
             if (result is ResultWrapper.Success) {
@@ -86,7 +78,7 @@ class CoinRepositoryTest : TestRepository() {
     fun `api-(get coin detail - no coin found)`() {
 
         val request = GetCoinDetailRequest("ethereum11")
-        val data = executeApi { repository.getCoinDetail(request) }
+        val data = executeApi { coinRepository.getCoinDetail(request) }
 
         checkApiCondition("Coin Detail Not found!", data) { result ->
             if (result is ResultWrapper.Error) {

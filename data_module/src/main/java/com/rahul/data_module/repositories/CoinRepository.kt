@@ -9,6 +9,7 @@ import com.rahul.data_module.source.ApiService
 import com.rahul.data_module.source.ResultWrapper
 import com.rahul.data_module.source.exceptions.ApiException
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @DataScope
 class CoinRepository @Inject constructor(private val apiService: ApiService) : DataRepository() {
