@@ -8,17 +8,17 @@ import okhttp3.Interceptor
 import javax.inject.Named
 import javax.inject.Singleton
 
-@DataScope
+@Singleton
 @Component(modules = [DataModule::class])
 interface DataComponent {
 
 
 //     fun get
 
-    @DataScope
+    @Singleton
     fun getCoinRepository(): CoinRepository
 
-    @DataScope
+    @Singleton
     fun inject(testDataRepository: TestDataRepositories)
 
 

@@ -13,11 +13,11 @@ abstract class BaseViewModel : ViewModel() {
 
     private val jobs = ArrayList<Job>()
 
-    fun updateDataState(state: MutableLiveData<ResponseData>, data: ResponseData) {
+    fun  updateDataState(state: MutableLiveData<ResponseData>, data: ResponseData) {
         state.value = data
     }
 
-    fun createNewResponseData() = MutableLiveData<ResponseData>(ResponseData.Init)
+    fun createNewResponseData() = MutableLiveData<ResponseData>().apply { postValue(ResponseData.Init) }
 
 
     protected fun <T> executeUseCaseData(

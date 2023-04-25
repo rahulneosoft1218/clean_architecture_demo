@@ -1,6 +1,5 @@
 package com.rahul.data_module.repositories
 
-import com.rahul.data_module.di.DataScope
 import com.rahul.data_module.models.requests.GetAllCoinRequest
 import com.rahul.data_module.models.requests.GetCoinDetailRequest
 import com.rahul.data_module.models.response.CoinEntity
@@ -11,7 +10,7 @@ import com.rahul.data_module.source.exceptions.ApiException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@DataScope
+@Singleton
 class CoinRepository @Inject constructor(private val apiService: ApiService) : DataRepository() {
 
 

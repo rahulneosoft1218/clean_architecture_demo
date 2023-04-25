@@ -1,6 +1,5 @@
 package com.rahul.domain_module.di
 
-import com.rahul.data_module.di.DataScope
 import com.rahul.domain_module.usecases.GetAllCoinsUseCase
 import com.rahul.domain_module.usecases.GetCoinsDetailUseCase
 import com.rahul.domain_module.usecases.TestUseCases
@@ -8,16 +7,17 @@ import dagger.BindsInstance
 import dagger.Component
 import okhttp3.Interceptor
 import javax.inject.Named
+import javax.inject.Singleton
 
-@DataScope
+@Singleton
 @Component(modules = [DomainModule::class])
 interface DomainComponent {
 
 
-    @DataScope
+    @Singleton
     fun getAllCoinUseCase(): GetAllCoinsUseCase
 
-    @DataScope
+    @Singleton
     fun getCoinDetailUseCase(): GetCoinsDetailUseCase
 
     @Component.Factory
@@ -28,7 +28,7 @@ interface DomainComponent {
         ): DomainComponent
     }
 
-    @DataScope
+    @Singleton
     fun inject(testUseCases : TestUseCases)
 
 }

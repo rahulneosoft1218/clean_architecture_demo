@@ -12,6 +12,15 @@
 //        mavenCentral()
 //    }
 //}
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+}
+
 rootProject.name = "CleanDemo"
 include ':app'
 include ':data_module'

@@ -1,15 +1,17 @@
 package com.rahul.present_mobile.viewmodels
 
+import androidx.lifecycle.MutableLiveData
 import com.rahul.domain_module.core.UseCaseWrapper
 import com.rahul.domain_module.params.GetCoinDetailParam
+import com.rahul.domain_module.responses.GetAllCoinResponse
 import com.rahul.domain_module.usecases.GetAllCoinsUseCase
 import com.rahul.domain_module.usecases.GetCoinsDetailUseCase
 import com.rahul.present_mobile.core.BaseViewModel
 import com.rahul.present_mobile.core.ResponseData
-import com.rahul.present_mobile.di.VMScope
-import javax.inject.Inject
+ import javax.inject.Inject
+import javax.inject.Singleton
 
-@VMScope
+@Singleton
 class CoinViewModel @Inject constructor(
     private val getAllCoinsUseCase: GetAllCoinsUseCase,
     private val getCoinsDetailUseCase: GetCoinsDetailUseCase
@@ -49,6 +51,10 @@ class CoinViewModel @Inject constructor(
                 is UseCaseWrapper.Error -> _coinDetail.value = ResponseData.Failed(result.error)
             }
         }
+    }
+
+    fun onTerminate() {
+        super.onCleared()
     }
 
 }

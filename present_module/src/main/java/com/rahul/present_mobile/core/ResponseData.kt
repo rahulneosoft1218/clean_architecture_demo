@@ -9,6 +9,7 @@ sealed class ResponseData {
     object ShowPageLoading : ResponseData()
     object HideLoading : ResponseData()
     object HidePageLoading : ResponseData()
+    data class Toast(val toastMessage: String?) : ResponseData()
     data class Success<Data>(val data: Data) : ResponseData()
     data class Failed(val domainExceptions: DomainExceptions) : ResponseData()
 

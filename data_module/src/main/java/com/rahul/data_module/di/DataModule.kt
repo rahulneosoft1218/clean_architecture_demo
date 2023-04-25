@@ -15,7 +15,7 @@ import javax.inject.Singleton
 class DataModule @Inject constructor() {
 
     @Provides
-    @DataScope
+    @Singleton
     fun provideApiService(
         @Named("baseUrl") baseUrl: String,
         okHttpClient: OkHttpClient
@@ -24,7 +24,7 @@ class DataModule @Inject constructor() {
     }
 
     @Provides
-    @DataScope
+    @Singleton
     fun provideOkhttpClient(extraInterceptors: List<Interceptor>?): OkHttpClient {
         val httpLogging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
