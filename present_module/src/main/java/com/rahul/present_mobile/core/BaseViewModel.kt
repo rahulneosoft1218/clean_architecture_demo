@@ -13,11 +13,23 @@ abstract class BaseViewModel : ViewModel() {
 
     private val jobs = ArrayList<Job>()
 
-    fun  updateDataState(state: MutableLiveData<ResponseData>, data: ResponseData) {
+    fun <R, UI> updateDataState(
+        state: MutableLiveData<ResponseData<R, UI>>,
+        data: ResponseData<*, *>
+    ) {
+        state.value = data as ResponseData<R, UI>
+    }
+
+    fun <R, UI> updateFailedDataState(
+        state: MutableLiveData<ResponseData<R, UI>>,
+        data: ResponseData<R, UI>
+    ) {
         state.value = data
     }
 
-    fun createNewResponseData() = MutableLiveData<ResponseData>().apply { postValue(ResponseData.Init) }
+
+    fun <R, UI> createNewResponseData() =
+        MutableLiveData<ResponseData<R, UI>>().apply { postValue(ResponseData.Init as ResponseData<R, UI>) }
 
 
     protected fun <T> executeUseCaseData(
@@ -29,6 +41,20 @@ abstract class BaseViewModel : ViewModel() {
         }
         jobs.add(job)
     }
+
+//    fun  <R,E>  checkFailedResponse(
+//        state: MutableLiveData<ResponseData <R,E>>,
+//        domainExceptions: DomainExceptions
+//    ) {
+//        if (domainExceptions.domainErrors.ordinal == DomainErrors.NO_INTERNET.ordinal) {
+//            updateDataState(state, ResponseData.UIEvents(UIEvents.OnNoInternet  as ResponseData.UIEvents<E>))
+//            updateDataState(state, ResponseData.UIEvents<E>(UIEvents.OnNoInternet))
+//        } else {
+//            updateDataState(
+//                state, ResponseData.UIEvents<E>(UIEvents.ShowError(domainExceptions.message))
+//            )
+//        }
+//    }
 
 
     override fun onCleared() {

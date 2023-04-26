@@ -1,23 +1,19 @@
 package com.rahul.present_mobile.di
 
-import android.app.Activity
-import com.rahul.present_mobile.viewmodels.CoinViewModel
-import com.rahul.present_mobile.viewmodels.TestViewModels
+import com.rahul.present_mobile.core.InjectActivity
+import com.rahul.present_mobile.viewModelFactories.CoinViewModelFactory
 import dagger.BindsInstance
 import dagger.Component
 import okhttp3.Interceptor
 import javax.inject.Named
 import javax.inject.Singleton
 
-@Singleton
-@Component(modules = [PresentDomainModule::class, PresentVMModule::class])
+//@Singleton
+@Component(modules = [PresentVMModule::class])
 interface PresentComponent {
 
-    ////    @Binds
-//    @IntoMap
-//    @ViewModelKey(CoinViewModel::class)
-    @Singleton
-    fun getCoinViewModel(): CoinViewModel
+//    @Singleton
+//    fun getCoinViewModelFactory(): CoinViewModelFactory
 
 
     @Component.Factory
@@ -27,7 +23,5 @@ interface PresentComponent {
             @BindsInstance interceptors: List<Interceptor>?,
         ): PresentComponent
     }
-
-    fun inject(activity: Activity)
 
 }

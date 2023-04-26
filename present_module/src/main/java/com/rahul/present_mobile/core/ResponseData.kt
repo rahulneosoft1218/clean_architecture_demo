@@ -1,16 +1,13 @@
 package com.rahul.present_mobile.core
 
+import android.provider.CalendarContract.Events
 import com.rahul.domain_module.exceptions.DomainExceptions
 
-sealed class ResponseData {
+sealed class ResponseData<Data, Events> {
 
-    object Init : ResponseData()
-    object ShowLoading : ResponseData()
-    object ShowPageLoading : ResponseData()
-    object HideLoading : ResponseData()
-    object HidePageLoading : ResponseData()
-    data class Toast(val toastMessage: String?) : ResponseData()
-    data class Success<Data>(val data: Data) : ResponseData()
-    data class Failed(val domainExceptions: DomainExceptions) : ResponseData()
+    object Init : ResponseData<Nothing, Nothing>()
+    data class Success<Data>(val data: Data) : ResponseData<Data, Nothing>()
+    data class Failed<Data, Events>(val domainExceptions: DomainExceptions) : ResponseData<Data, Events>()
+    data class UIEvents<Events>(val uiEvents: Events) : ResponseData<Nothing, Events>()
 
 }

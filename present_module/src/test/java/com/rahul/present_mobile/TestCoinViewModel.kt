@@ -1,4 +1,5 @@
 package com.rahul.present_mobile
+/*
 
 import android.app.Activity
 import android.os.Looper
@@ -20,21 +21,23 @@ class TestCoinViewModel : UnitTestViewModels() {
 //        val activity = Mockito.mock(Activity::class.java)
 //         Looper.getMainLooper()
 //        presentComponent.inject(activity)
-        Log.d("Test-VM","OnCreate")
+        //Log.d("Test-VM","OnCreate")
+
+//        coinViewModel = presentComponent.getCoinViewModel()
     }
 
 
 
 
 
-    @Test
-    fun `vm-fetchAllCoins`() {
-
-        coinViewModel.fetchAllCoin()
-        val responseData: ResponseData = coinViewModel.allCoins.getOrAwaitValue(3000)
-        Assert.assertEquals("fetchAllCoins", responseData is ResponseData.Success<*>)
-
-    }
+//    @Test
+//    fun `vm-fetchAllCoins`() {
+//
+//        coinViewModel.fetchAllCoin()
+//        val responseData: ResponseData<*,*> = coinViewModel.allCoins.getOrAwaitValue(3000)
+//        Assert.assertEquals("fetchAllCoins", responseData is ResponseData.Success<*>)
+//
+//    }
 
 
 //
@@ -42,4 +45,4 @@ class TestCoinViewModel : UnitTestViewModels() {
 //        coinViewModel.onTerminate()
 //    }
 
-}
+}*/

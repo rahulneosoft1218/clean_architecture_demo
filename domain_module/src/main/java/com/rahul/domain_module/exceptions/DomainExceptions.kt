@@ -2,7 +2,7 @@ package com.rahul.domain_module.exceptions
 
 import com.rahul.data_module.source.exceptions.ApiException
 
-data class DomainExceptions(val domainErrors: DomainErrors, val message: String) {
+data class DomainExceptions(val domainErrors: DomainErrors, override val message: String) : Throwable(){
 
     companion object {
 
