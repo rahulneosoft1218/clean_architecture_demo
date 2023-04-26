@@ -1,20 +1,20 @@
-package com.rahul.data_module.repositories
+package com.rahul.data_module.test
 
 import com.rahul.data_module.source.cache.IAppCache
 
-class TestCache private constructor() : IAppCache {
+class TestDataCache private constructor() : IAppCache {
 
     companion object {
         @Volatile
-        private var testCache: TestCache? = null
+        private var testDataCache: TestDataCache? = null
 
-        fun getTestCache(): TestCache {
+        fun getTestDataCache(): TestDataCache {
 
-            if (testCache == null) {
-                testCache = TestCache()
+            if (testDataCache == null) {
+                testDataCache = TestDataCache()
             }
 
-            return testCache!!
+            return testDataCache!!
         }
 
 
