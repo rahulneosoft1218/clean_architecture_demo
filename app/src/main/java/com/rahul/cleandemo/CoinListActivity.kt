@@ -3,6 +3,7 @@ package com.rahul.cleandemo
 import com.rahul.cleandemo.databinding.ActivityCoinBinding
 import com.rahul.cleandemo.di.ActivityComponent
 import com.rahul.present_mobile.core.ResponseData
+import com.rahul.present_mobile.uiEvents.CoinDetailUIEvent
 import com.rahul.present_mobile.uiEvents.CoinListUIEvent
 import com.rahul.present_mobile.utils.toastMessage
 import com.rahul.present_mobile.viewModelFactories.CoinViewModelFactory
@@ -23,13 +24,29 @@ class CoinListActivity : AppActivity<ActivityCoinBinding>(
     override fun onActivityCreated(activityComponent: ActivityComponent) {
         activityComponent.inject(this)
         coinViewModel = createViewModel(coinViewModelFactory, CoinViewModel::class.java)
+        mBinding.viewModel = coinViewModel
+
 
         coinViewModel.fetchAllCoin()
         coinViewModel.allCoins.observe(this) { responseData ->
             when (responseData) {
-                is ResponseData.Success -> updateData("Item found ${responseData.data.size}")
+                is ResponseData.Success -> {
+                    val size = responseData.data.size
+                    if (size>0){
+                        mBinding.itemId = responseData.data[0].id
+                    }
+                    updateData("Item found ${responseData.data.size}")}
                 is ResponseData.Failed -> updateData(responseData.domainExceptions.message)
                 is ResponseData.UIEvents -> observeCoinListEvent(responseData.uiEvents)
+                else -> logElseResponse(responseData)
+            }
+        }
+
+        coinViewModel.coinDetail.observe(this) { responseData ->
+            when (responseData) {
+                is ResponseData.Success -> updateData(responseData.data)
+                is ResponseData.Failed -> updateData(responseData.domainExceptions.message)
+                is ResponseData.UIEvents -> observeCoinDetailEvent(responseData.uiEvents)
                 else -> logElseResponse(responseData)
             }
         }
@@ -37,30 +54,25 @@ class CoinListActivity : AppActivity<ActivityCoinBinding>(
 
     }
 
-/*
-    override fun onCreate(presentComponent: PresentComponent) {
-        presentComponent.inject(this)
-        coinViewModel = createViewModel(coinViewModelFactory, CoinViewModel::class.java)
+    private fun observeCoinDetailEvent(uiEvents: CoinDetailUIEvent) {
+        when (uiEvents) {
 
-
-
-        coinViewModel.fetchAllCoin()
-        coinViewModel.allCoins.observe(this) { responseData ->
-            when (responseData) {
-                is ResponseData.Success -> updateData("Item found ${responseData.data.size}")
-                is ResponseData.Failed -> updateData(responseData.domainExceptions.message)
-                is ResponseData.UIEvents -> observeCoinListEvent(responseData.uiEvents)
-                else -> logElseResponse(responseData)
+            is CoinDetailUIEvent.ShowLoader -> {
+                if (uiEvents.status) {
+                    updateData("Loading ${uiEvents.dataMessage}....Please Wait")
+                } else {
+                    updateData("Loader Hide")
+                }
             }
+            is CoinDetailUIEvent.UIEvents -> onObserveUIEvents(uiEvents.baseUIEvents)
         }
-
     }
-*/
+
 
     private fun observeCoinListEvent(uiEvents: CoinListUIEvent) {
         when (uiEvents) {
-            is CoinListUIEvent.NavigateCoinDetail -> {
-                toastMessage("Coin Id ${uiEvents.id}")
+            is CoinListUIEvent.NavigateCoinDetail ->{
+                navigateToCoinDetailScreen(uiEvents.id)
             }
             is CoinListUIEvent.ShowLoader -> {
                 if (uiEvents.status) {
@@ -70,7 +82,11 @@ class CoinListActivity : AppActivity<ActivityCoinBinding>(
                 }
             }
             is CoinListUIEvent.UIEvents -> onObserveUIEvents(uiEvents.baseUIEvents)
-        }
+         }
+    }
+
+    private fun navigateToCoinDetailScreen(id: String?) {
+        coinViewModel.fetchCoinDetail(id)
     }
 
 

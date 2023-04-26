@@ -17,14 +17,14 @@ abstract class BaseViewModel : ViewModel() {
         state: MutableLiveData<ResponseData<R, UI>>,
         data: ResponseData<*, *>
     ) {
-        state.value = data as ResponseData<R, UI>
+        state.postValue(data as ResponseData<R, UI>)
     }
 
     fun <R, UI> updateFailedDataState(
         state: MutableLiveData<ResponseData<R, UI>>,
         data: ResponseData<R, UI>
     ) {
-        state.value = data
+        state.postValue(data)
     }
 
 
