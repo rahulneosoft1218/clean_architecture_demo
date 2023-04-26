@@ -1,4 +1,4 @@
-package com.rahul.data_module.source
+package com.rahul.data_module.source.network.retrofit
 
 import com.rahul.data_module.source.exceptions.ApiException
 

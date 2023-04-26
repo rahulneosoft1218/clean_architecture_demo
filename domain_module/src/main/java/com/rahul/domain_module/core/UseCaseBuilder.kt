@@ -1,6 +1,6 @@
 package com.rahul.domain_module.core
 
-import com.rahul.data_module.source.ResultWrapper
+import com.rahul.data_module.source.network.retrofit.ResultWrapper
 import com.rahul.data_module.source.exceptions.ApiException
 import com.rahul.domain_module.exceptions.DomainExceptions
 import com.rahul.domain_module.exceptions.DomainExceptions.Companion.mapDomainException

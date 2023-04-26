@@ -1,7 +1,11 @@
 package com.rahul.data_module.repositories
 
-import com.rahul.data_module.source.ResultWrapper
+import com.rahul.data_module.source.cache.IAppCache
 import com.rahul.data_module.source.exceptions.ApiException
+import com.rahul.data_module.source.network.retrofit.NetworkCheckInterceptor
+import com.rahul.data_module.source.network.retrofit.ResultWrapper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
@@ -9,12 +13,19 @@ import org.junit.After
 import org.junit.Before
 
 
-abstract class UnitTestRepositories : TestDataRepositories() {
+abstract class UnitTestRepositories : TestDataRepositories("https://api.coingecko.com/") {
 
+    protected val testCoroutineScope = CoroutineScope(Dispatchers.IO)
+    override fun mockNetworkCheckInterceptor() = object : NetworkCheckInterceptor() {
+        override fun isNetworkConnectionAvailable(): Boolean = true
+    }
+
+    override fun getAppCache() = TestCache.getTestCache()
 
     @Before
     override fun onCreate() {
         super.onCreate()
+        getAppCache().cacheString(IAppCache.DEFAULT_CURRENCY, "usd")
     }
 
     override fun <T> checkApiCondition(

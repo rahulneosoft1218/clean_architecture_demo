@@ -2,9 +2,9 @@ package com.rahul.data_module.source.exceptions
 
 import com.google.gson.Gson
 import com.rahul.data_module.models.response.ErrorModel
-import retrofit2.HttpException
+import java.io.IOException
 
-sealed class ApiException(val resCode: Int, open val errorMsg: String?) : Throwable() {
+sealed class ApiException(val resCode: Int, open val errorMsg: String?) : IOException() {
 
     override val message: String?
         get() = errorMsg
@@ -34,20 +34,30 @@ sealed class ApiException(val resCode: Int, open val errorMsg: String?) : Throwa
 
         fun Throwable?.mapToApiException(): ApiException {
 
-            if (this == null) return UnknownException()
+            var apiException: ApiException = UnknownException()
 
-            if (this !is HttpException) return UnknownException()
+            if (this == null) return apiException
 
-            return when (val resCode = this.code()) {
-                500 -> InternalServerException
-                400,404 -> {
-                    val errorRes = this.response()?.errorBody()?.string()
-                    BadRequestException(errorRes)
-                }
-                else -> {
-                    UnknownException(resCode, this.message)
-                }
+
+            if (this.cause?.cause is ApiException) {
+                apiException = (this.cause?.cause as ApiException?) ?: apiException
             }
+
+            return apiException
+
+            /*  if (this !is HttpException) return UnknownException()
+
+              return when (val resCode = this.code()) {
+                  -1 -> NoInternetConnection
+                  500 -> InternalServerException
+                  400,404 -> {
+                      val errorRes = this.response()?.errorBody()?.string()
+                      BadRequestException(errorRes)
+                  }
+                  else -> {
+                      UnknownException(resCode, this.message)
+                  }
+              }*/
 
 
         }

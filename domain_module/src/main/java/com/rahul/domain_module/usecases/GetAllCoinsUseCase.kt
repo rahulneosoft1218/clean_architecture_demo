@@ -22,8 +22,8 @@ class GetAllCoinsUseCase @Inject constructor(private val coinRepository: CoinRep
             val request = GetAllCoinRequest(
                 "usd",
                 "market_cap_desc",
-                1,
                 2,
+                1,
                 false
             )
             coinRepository.getAllCoins(request)

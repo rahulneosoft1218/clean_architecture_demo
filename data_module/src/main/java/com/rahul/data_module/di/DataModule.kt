@@ -1,10 +1,11 @@
 package com.rahul.data_module.di
 
-import com.rahul.data_module.source.ApiService
-import com.rahul.data_module.source.RetrofitApiClient
+import com.rahul.data_module.source.cache.IAppCache
+import com.rahul.data_module.source.network.INetworkData
+import com.rahul.data_module.source.network.retrofit.OkhttpConfiguration
+import com.rahul.data_module.source.network.retrofit.RetrofitApiClient
 import dagger.Module
 import dagger.Provides
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Inject
@@ -16,27 +17,27 @@ class DataModule @Inject constructor() {
 
     @Provides
     @Singleton
-    fun provideApiService(
+    fun provideNetworkData(
         @Named("baseUrl") baseUrl: String,
-        okHttpClient: OkHttpClient
-    ): ApiService {
-        return RetrofitApiClient(baseUrl, okHttpClient).getApiService()
+        okHttpClient: OkHttpClient,
+        appcache: IAppCache
+    ): INetworkData {
+        return RetrofitApiClient(baseUrl, okHttpClient, appcache)
     }
 
     @Provides
     @Singleton
-    fun provideOkhttpClient(extraInterceptors: List<Interceptor>?): OkHttpClient {
+    fun provideOkhttpClient(
+        okhttpConfiguration: OkhttpConfiguration
+    ): OkHttpClient {
         val httpLogging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-        val okHttpClientBuilder = OkHttpClient()
+        val builder = OkHttpClient()
             .newBuilder()
-
-        extraInterceptors?.forEach {
-            okHttpClientBuilder.addInterceptor(it)
-        }
-        return okHttpClientBuilder
-            .addInterceptor(httpLogging)
+        builder.addInterceptor(httpLogging)
+        builder.addInterceptor(okhttpConfiguration.getNetworkCheckInterceptor())
+        return okhttpConfiguration.configOkhttpClient(builder = builder)
             .build()
     }
 

@@ -2,9 +2,10 @@ package com.rahul.data_module.di
 
 import com.rahul.data_module.repositories.CoinRepository
 import com.rahul.data_module.repositories.TestDataRepositories
+import com.rahul.data_module.source.cache.IAppCache
+import com.rahul.data_module.source.network.retrofit.OkhttpConfiguration
 import dagger.BindsInstance
 import dagger.Component
-import okhttp3.Interceptor
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -26,28 +27,12 @@ interface DataComponent {
     interface Factory {
         fun create(
             @BindsInstance @Named("baseUrl") baseUrl: String,
-            @BindsInstance interceptors: List<Interceptor>?
+            @BindsInstance okhttpConfiguration: OkhttpConfiguration,
+            @BindsInstance appcache: IAppCache
         ): DataComponent
 
     }
 
-/*
-    @Component.Builder
-    interface Builder {
-//        @BindsInstance
-//        fun baseUrl(@Named("baseUrl") baseUrl: String): Builder
-////        fun extraInterceptors( @Named("baseUrl2") extraInterceptors: List<Interceptor>?): Builder
-
-
-        fun dataModule( @BindsInstance dataModule: DataModule): Builder
-        fun build(): DataComponent
-
-//        fun create(
-//            @BindsInstance dataModule: DataModule,
-//        ): DataComponent
-
-    }
-*/
 
 
 }

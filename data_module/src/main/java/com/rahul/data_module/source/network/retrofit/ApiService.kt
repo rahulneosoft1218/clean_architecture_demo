@@ -1,4 +1,4 @@
-package com.rahul.data_module.source
+package com.rahul.data_module.source.network.retrofit
 
 import com.rahul.data_module.models.response.CoinEntity
 import com.rahul.data_module.models.response.CoinEntityDetail
@@ -9,6 +9,17 @@ import retrofit2.http.Query
 interface ApiService {
     @GET("{endPath}")
     suspend fun getAllCoins(
+        @Path("endPath", encoded = true) path: String,
+        @Query("vs_currency") vs_currency: String,
+        @Query("order") order: String,
+        @Query("per_page") perPage: Int,
+        @Query("page") page: Int,
+        @Query("sparkline") sparkline: Boolean
+    ): List<CoinEntity>
+
+
+    @GET("{endPath}")
+     fun getAllCoins2(
         @Path("endPath", encoded = true) path: String,
         @Query("vs_currency") vs_currency: String,
         @Query("order") order: String,
