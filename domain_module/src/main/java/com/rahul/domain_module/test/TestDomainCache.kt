@@ -1,17 +1,17 @@
-package com.rahul.data_module.test
+package com.rahul.domain_module.test
 
 import com.rahul.data_module.source.cache.IAppCache
 
-class TestDataCache private constructor() : IAppCache {
+class TestDomainCache private constructor() : IAppCache {
 
     companion object {
         @Volatile
-        private var testDataCache: TestDataCache? = null
+        private var testDataCache: TestDomainCache? = null
 
-        fun getTestDataCache(): TestDataCache {
+        fun getTestDomainCache(): TestDomainCache {
 
             if (testDataCache == null) {
-                testDataCache = TestDataCache()
+                testDataCache = TestDomainCache()
             }
 
             return testDataCache!!

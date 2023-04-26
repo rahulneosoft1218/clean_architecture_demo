@@ -1,7 +1,8 @@
-package com.rahul.data_module.repositories
+package com.rahul.data_module.test
 
 import com.rahul.data_module.di.DaggerDataComponent
 import com.rahul.data_module.di.DataComponent
+import com.rahul.data_module.repositories.CoinRepository
 import com.rahul.data_module.source.cache.IAppCache
 import com.rahul.data_module.source.exceptions.ApiException
 import com.rahul.data_module.source.exceptions.ApiException.Companion.mapToApiException
@@ -14,8 +15,7 @@ import javax.inject.Inject
 
 abstract class TestDataRepositories(private val baseUrl: String) {
 
-
-    abstract fun mockNetworkCheckInterceptor(): NetworkCheckInterceptor
+    abstract fun getOkhttpConfig(): OkhttpConfiguration
     abstract fun getAppCache(): IAppCache
 
     @Inject
@@ -32,18 +32,11 @@ abstract class TestDataRepositories(private val baseUrl: String) {
 
     open fun onCreate() {
 
-        val okhttpConfiguration = object : OkhttpConfiguration() {
-            override fun getNetworkCheckInterceptor() = mockNetworkCheckInterceptor()
-
-            override fun configOkhttpClient(builder: OkHttpClient.Builder) = builder
-
-        }
-
         val dataComponent: DataComponent = DaggerDataComponent
             .factory()
             .create(
                 baseUrl = baseUrl,
-                okhttpConfiguration = okhttpConfiguration,
+                okhttpConfiguration = getOkhttpConfig(),
                 appcache = getAppCache()
             )
         dataComponent.inject(this)

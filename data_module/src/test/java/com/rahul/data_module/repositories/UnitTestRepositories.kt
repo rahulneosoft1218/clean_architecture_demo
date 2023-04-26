@@ -2,8 +2,10 @@ package com.rahul.data_module.repositories
 
 import com.rahul.data_module.source.cache.IAppCache
 import com.rahul.data_module.source.exceptions.ApiException
-import com.rahul.data_module.source.network.retrofit.NetworkCheckInterceptor
 import com.rahul.data_module.source.network.retrofit.ResultWrapper
+import com.rahul.data_module.test.TestDataCache
+import com.rahul.data_module.test.TestDataOkhttpConfig
+import com.rahul.data_module.test.TestDataRepositories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.hamcrest.Description
@@ -16,11 +18,8 @@ import org.junit.Before
 abstract class UnitTestRepositories : TestDataRepositories("https://api.coingecko.com/") {
 
     protected val testCoroutineScope = CoroutineScope(Dispatchers.IO)
-    override fun mockNetworkCheckInterceptor() = object : NetworkCheckInterceptor() {
-        override fun isNetworkConnectionAvailable(): Boolean = true
-    }
-
-    override fun getAppCache() = TestCache.getTestCache()
+    override fun getAppCache() = TestDataCache.getTestDataCache()
+    override fun getOkhttpConfig() = TestDataOkhttpConfig(internetOn = true)
 
     @Before
     override fun onCreate() {

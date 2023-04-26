@@ -4,7 +4,7 @@ import com.rahul.data_module.source.network.retrofit.NetworkCheckInterceptor
 import com.rahul.data_module.source.network.retrofit.OkhttpConfiguration
 import okhttp3.OkHttpClient
 
-class TestOkhttpConfig(private val internetOn: Boolean) : OkhttpConfiguration() {
+class TestDataOkhttpConfig(private val internetOn: Boolean) : OkhttpConfiguration() {
 
     override fun getNetworkCheckInterceptor() = object : NetworkCheckInterceptor() {
         override fun isNetworkConnectionAvailable(): Boolean = internetOn

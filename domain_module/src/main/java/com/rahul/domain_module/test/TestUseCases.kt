@@ -1,14 +1,23 @@
-package com.rahul.domain_module.usecases
+package com.rahul.domain_module.test
 
+import com.rahul.data_module.source.cache.IAppCache
+import com.rahul.data_module.source.network.retrofit.OkhttpConfiguration
 import com.rahul.domain_module.core.UseCaseWrapper
 import com.rahul.domain_module.di.DaggerDomainComponent
 import com.rahul.domain_module.di.DomainComponent
 import com.rahul.domain_module.exceptions.DomainExceptions
 import com.rahul.domain_module.exceptions.DomainExceptions.Companion.mapDomainException
+import com.rahul.domain_module.usecases.GetAllCoinsUseCase
+import com.rahul.domain_module.usecases.GetCoinsDetailUseCase
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-abstract class TestUseCases {
+abstract class TestUseCases constructor(private val baseUrl: String) {
+
+    protected val testCoroutineScope = CoroutineScope(Dispatchers.IO)
+
+    abstract fun getOkhttpConfig(): OkhttpConfiguration
+    abstract fun getAppCache(): IAppCache
 
     @Inject
     lateinit var getAllCoinsUseCase: GetAllCoinsUseCase
@@ -27,7 +36,11 @@ abstract class TestUseCases {
 
     open fun onCreate() {
         val domainComponent: DomainComponent = DaggerDomainComponent
-            .factory().create("https://api.coingecko.com/", null)
+            .factory().create(
+                baseUrl = baseUrl,
+                okhttpConfiguration = getOkhttpConfig(),
+                appcache = getAppCache()
+            )
 
         domainComponent.inject(this)
     }

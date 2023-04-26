@@ -1,7 +1,7 @@
 package com.rahul.data_module.di
 
 import com.rahul.data_module.repositories.CoinRepository
-import com.rahul.data_module.repositories.TestDataRepositories
+import com.rahul.data_module.test.TestDataRepositories
 import com.rahul.data_module.source.cache.IAppCache
 import com.rahul.data_module.source.network.retrofit.OkhttpConfiguration
 import dagger.BindsInstance

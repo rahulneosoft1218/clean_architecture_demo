@@ -7,7 +7,7 @@ import com.rahul.data_module.models.response.CoinEntityDetail
 
 interface INetworkData {
 
-     suspend fun fetchAllCoins(request: GetAllCoinRequest) : List<CoinEntity>
+    suspend fun fetchAllCoins(request: GetAllCoinRequest) : List<CoinEntity>
     suspend fun fetchCoinDetail(request: GetCoinDetailRequest) : CoinEntityDetail
 
 }
