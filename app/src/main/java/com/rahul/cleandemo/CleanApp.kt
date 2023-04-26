@@ -1,25 +1,27 @@
 package com.rahul.cleandemo
 
-import android.util.Log
-import com.rahul.cleandemo.di.DaggerMyAppComponent
-import com.rahul.cleandemo.di.MyAppComponent
-import com.rahul.present_mobile.PresentApplication
-import com.rahul.present_mobile.di.PresentComponent
-import okhttp3.Interceptor
+import android.app.Application
+import com.rahul.cleandemo.base.AppCache
+import com.rahul.cleandemo.config.AppOkhttpConfig
+import com.rahul.cleandemo.di.AppComponent
+import com.rahul.cleandemo.di.DaggerAppComponent
 
-class CleanApp : PresentApplication("https://api.coingecko.com/") {
+class CleanApp : Application() {
 
-    lateinit var appComponent: MyAppComponent
+    lateinit var appComponent: AppComponent
+    lateinit var appCache: AppCache
 
 
+    override fun onCreate() {
+        super.onCreate()
+        appCache = AppCache.getAppCache(this)
+        appComponent = DaggerAppComponent.factory()
+            .create(
+                baseUrl = "https://api.coingecko.com/",
+                okhttpConfiguration = AppOkhttpConfig(this),
+                appCache = appCache
+            )
 
-    override fun onCreate(presentComponent: PresentComponent) {
-        appComponent = DaggerMyAppComponent.builder()
-            .presentComponent(presentComponent)
-            .build()
-
-        Log.i("CleanApp", "OnCreate")
     }
-
 
 }

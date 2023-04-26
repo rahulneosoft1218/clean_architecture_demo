@@ -25,4 +25,4 @@ rootProject.name = "CleanDemo"
 include ':app'
 include ':data_module'
 include ':domain_module'
-include ':present_module'
+//include ':present_module'

@@ -34,16 +34,19 @@ sealed class ApiException(val resCode: Int, open val errorMsg: String?) : IOExce
 
         fun Throwable?.mapToApiException(): ApiException {
 
-            var apiException: ApiException = UnknownException()
+            var apiException: ApiException? = UnknownException()
 
-            if (this == null) return apiException
+            if (this == null) return apiException!!
 
 
-            if (this.cause?.cause is ApiException) {
-                apiException = (this.cause?.cause as ApiException?) ?: apiException
+            if (this.cause is ApiException) {
+                apiException = this.cause as ApiException?
+            }
+            if (apiException == null && this.cause?.cause is ApiException) {
+                apiException = this.cause?.cause as ApiException?
             }
 
-            return apiException
+            return apiException ?: UnknownException()
 
             /*  if (this !is HttpException) return UnknownException()
 

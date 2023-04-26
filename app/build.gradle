@@ -35,6 +35,13 @@ android {
     buildFeatures {
         dataBinding true
     }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -42,20 +49,21 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-//    testImplementation 'junit:junit:4.13.2'
-//    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
 
     //dagger dependency
     implementation 'com.google.dagger:dagger:2.44'
     implementation 'com.google.dagger:dagger-android-support:2.44'
     kapt 'com.google.dagger:dagger-compiler:2.44'
     kapt "com.google.dagger:dagger-android-processor:2.44"
-    implementation project(':present_module')
+
     api project(':domain_module')
     api project(':data_module')
 
     implementation 'com.squareup.okhttp3:okhttp:4.6.0'
+    //viewModel
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
 
 
 

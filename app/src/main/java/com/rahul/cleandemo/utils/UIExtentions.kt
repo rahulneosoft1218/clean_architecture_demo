@@ -1,4 +1,4 @@
-package com.rahul.present_mobile.utils
+package com.rahul.cleandemo.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -34,6 +34,7 @@ fun Activity?.hideKeyBoard() {
 }
 
 
+@Suppress("DEPRECATION")
 @SuppressLint("MissingPermission")
 fun Context?.checkInternet(): Boolean {
     if (this == null) return false
@@ -50,7 +51,15 @@ fun Context?.checkInternet(): Boolean {
                 }
             }
         } else {
-            TODO("VERSION.SDK_INT < M")
+            cm.run {
+                cm.activeNetworkInfo?.run {
+                    if (type == ConnectivityManager.TYPE_WIFI) {
+                        result = true
+                    } else if (type == ConnectivityManager.TYPE_MOBILE) {
+                        result = true
+                    }
+                }
+            }
         }
     }
     return result

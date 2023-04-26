@@ -1,15 +1,15 @@
-package com.rahul.present_mobile.viewmodels
+package com.rahul.cleandemo.viewModels
 
 import androidx.lifecycle.viewModelScope
+import com.rahul.cleandemo.base.BaseViewModel
+import com.rahul.cleandemo.base.ResponseData
+import com.rahul.cleandemo.uiEvents.CoinDetailUIEvent
 import com.rahul.domain_module.core.UseCaseWrapper
 import com.rahul.domain_module.params.GetCoinDetailParam
 import com.rahul.domain_module.responses.GetAllCoinResponse
 import com.rahul.domain_module.usecases.GetAllCoinsUseCase
 import com.rahul.domain_module.usecases.GetCoinsDetailUseCase
-import com.rahul.present_mobile.core.BaseViewModel
-import com.rahul.present_mobile.core.ResponseData
-import com.rahul.present_mobile.uiEvents.CoinDetailUIEvent
-import com.rahul.present_mobile.uiEvents.CoinListUIEvent
+import com.rahul.cleandemo.uiEvents.CoinListUIEvent
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,11 +28,11 @@ class CoinViewModel @Inject constructor(
 
     fun fetchAllCoin() {
 
-        updateDataState(_allCoins, ResponseData.UIEvents(CoinListUIEvent.ShowLoader(true)))
+        updateDataState(_allCoins, ResponseData.UIResponse(CoinListUIEvent.ShowLoader(true)))
         executeUseCaseData({
             getAllCoinsUseCase.buildUseCase(viewModelScope)
         }) { result ->
-            updateDataState(_allCoins, ResponseData.UIEvents(CoinListUIEvent.ShowLoader(false)))
+            updateDataState(_allCoins, ResponseData.UIResponse(CoinListUIEvent.ShowLoader(false)))
             when (result) {
                 is UseCaseWrapper.Success -> updateDataState(
                     _allCoins,
@@ -50,7 +50,7 @@ class CoinViewModel @Inject constructor(
     fun onCoinItemClick(coinId: String?) {
         updateDataState(
             _allCoins,
-            ResponseData.UIEvents(CoinListUIEvent.NavigateCoinDetail(coinId))
+            ResponseData.UIResponse(CoinListUIEvent.NavigateCoinDetail(coinId))
         )
     }
 
@@ -59,11 +59,11 @@ class CoinViewModel @Inject constructor(
         executeUseCaseData({
             updateDataState(
                 _coinDetail,
-                ResponseData.UIEvents(CoinDetailUIEvent.ShowLoader(true, currency ?: ""))
+                ResponseData.UIResponse(CoinDetailUIEvent.ShowLoader(true, currency ?: ""))
             )
-            getCoinsDetailUseCase.buildUseCase(viewModelScope,GetCoinDetailParam(currency))
+            getCoinsDetailUseCase.buildUseCase(viewModelScope, GetCoinDetailParam(currency))
         }) { result ->
-            updateDataState(_coinDetail, ResponseData.UIEvents(CoinDetailUIEvent.ShowLoader(false)))
+            updateDataState(_coinDetail, ResponseData.UIResponse(CoinDetailUIEvent.ShowLoader(false)))
             when (result) {
                 is UseCaseWrapper.Success -> updateDataState(
                     _coinDetail,

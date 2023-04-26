@@ -1,18 +1,17 @@
 package com.rahul.cleandemo
 
+import com.rahul.cleandemo.base.BaseActivity
+import com.rahul.cleandemo.base.ResponseData
 import com.rahul.cleandemo.databinding.ActivityCoinBinding
-import com.rahul.cleandemo.di.ActivityComponent
-import com.rahul.present_mobile.core.ResponseData
-import com.rahul.present_mobile.uiEvents.CoinDetailUIEvent
-import com.rahul.present_mobile.uiEvents.CoinListUIEvent
-import com.rahul.present_mobile.utils.toastMessage
-import com.rahul.present_mobile.viewModelFactories.CoinViewModelFactory
-import com.rahul.present_mobile.viewmodels.CoinViewModel
+import com.rahul.cleandemo.di.AppComponent
+import com.rahul.cleandemo.uiEvents.CoinDetailUIEvent
+import com.rahul.cleandemo.uiEvents.CoinListUIEvent
+import com.rahul.cleandemo.viewModelFactories.CoinViewModelFactory
+import com.rahul.cleandemo.viewModels.CoinViewModel
 import javax.inject.Inject
 
-class CoinListActivity : AppActivity<ActivityCoinBinding>(
-    R.layout.activity_coin
-) {
+class CoinListActivity @Inject constructor() :
+    BaseActivity<ActivityCoinBinding>(layoutID = R.layout.activity_coin) {
 
 
     @Inject
@@ -20,24 +19,25 @@ class CoinListActivity : AppActivity<ActivityCoinBinding>(
 
     private lateinit var coinViewModel: CoinViewModel
 
+    override fun initViewModels(appComponent: AppComponent) {
+        appComponent.inject(this)
+        coinViewModel = createViewModel(this, coinViewModelFactory, CoinViewModel::class.java)
+    }
 
-    override fun onActivityCreated(activityComponent: ActivityComponent) {
-        activityComponent.inject(this)
-        coinViewModel = createViewModel(coinViewModelFactory, CoinViewModel::class.java)
-        mBinding.viewModel = coinViewModel
-
+    override fun onCreate() {
 
         coinViewModel.fetchAllCoin()
         coinViewModel.allCoins.observe(this) { responseData ->
             when (responseData) {
                 is ResponseData.Success -> {
                     val size = responseData.data.size
-                    if (size>0){
+                    if (size > 0) {
                         mBinding.itemId = responseData.data[0].id
                     }
-                    updateData("Item found ${responseData.data.size}")}
-                is ResponseData.Failed -> updateData(responseData.domainExceptions.message)
-                is ResponseData.UIEvents -> observeCoinListEvent(responseData.uiEvents)
+                    updateData("Item found ${responseData.data.size}")
+                }
+                is ResponseData.Failed -> updateData(mapDomainException(responseData.domainExceptions))
+                is ResponseData.UIResponse -> observeCoinListEvent(responseData.uiEvents)
                 else -> logElseResponse(responseData)
             }
         }
@@ -45,13 +45,11 @@ class CoinListActivity : AppActivity<ActivityCoinBinding>(
         coinViewModel.coinDetail.observe(this) { responseData ->
             when (responseData) {
                 is ResponseData.Success -> updateData(responseData.data)
-                is ResponseData.Failed -> updateData(responseData.domainExceptions.message)
-                is ResponseData.UIEvents -> observeCoinDetailEvent(responseData.uiEvents)
+                is ResponseData.Failed -> updateData(mapDomainException(responseData.domainExceptions))
+                is ResponseData.UIResponse -> observeCoinDetailEvent(responseData.uiEvents)
                 else -> logElseResponse(responseData)
             }
         }
-
-
     }
 
     private fun observeCoinDetailEvent(uiEvents: CoinDetailUIEvent) {
@@ -71,7 +69,7 @@ class CoinListActivity : AppActivity<ActivityCoinBinding>(
 
     private fun observeCoinListEvent(uiEvents: CoinListUIEvent) {
         when (uiEvents) {
-            is CoinListUIEvent.NavigateCoinDetail ->{
+            is CoinListUIEvent.NavigateCoinDetail -> {
                 navigateToCoinDetailScreen(uiEvents.id)
             }
             is CoinListUIEvent.ShowLoader -> {
@@ -82,7 +80,7 @@ class CoinListActivity : AppActivity<ActivityCoinBinding>(
                 }
             }
             is CoinListUIEvent.UIEvents -> onObserveUIEvents(uiEvents.baseUIEvents)
-         }
+        }
     }
 
     private fun navigateToCoinDetailScreen(id: String?) {
@@ -92,7 +90,7 @@ class CoinListActivity : AppActivity<ActivityCoinBinding>(
 
     private fun updateData(message: String) {
         mBinding.result = message
-       // mBinding.executePendingBindings()
+        // mBinding.executePendingBindings()
     }
 
     override fun onNoInternetFound() {
