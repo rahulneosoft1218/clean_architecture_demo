@@ -3,13 +3,16 @@ package com.rahul.data_module.repositories
 import com.rahul.data_module.models.requests.GetAllCoinRequest
 import com.rahul.data_module.models.requests.GetCoinDetailRequest
 import com.rahul.data_module.source.exceptions.ApiException
+import com.rahul.data_module.source.mock.MockDataLoadByFile
 import com.rahul.data_module.source.network.retrofit.ResultWrapper
 import org.junit.Test
 
 
-internal class CoinRepositoryTest : UnitTestRepositories() {
+internal class CoinRepositoryTest : UnitTestRepositories(false) {
 
 //    private val scope  = CoT
+
+    private val mockFilePath = "D:/StudioProjects/clean_architecture_demo/data_module/src/main/java/com/rahul/data_module/source/mock/"
 
 
     @Test
@@ -50,7 +53,7 @@ internal class CoinRepositoryTest : UnitTestRepositories() {
         )
 
 
-        val data = executeApi { coinRepository.getAllCoins(testCoroutineScope, request) }
+        val data = executeApi { coinRepository.getAllCoins(testCoroutineScope, request,MockDataLoadByFile("$mockFilePath/AllCoins.json")) }
 
         checkApiCondition("All Coins Found", data) { result ->
             if (result is ResultWrapper.Success) {

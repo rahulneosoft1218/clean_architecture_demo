@@ -2,6 +2,7 @@ package com.rahul.domain_module
 
 import com.rahul.domain_module.core.UseCaseWrapper
 import com.rahul.domain_module.exceptions.DomainErrors
+import com.rahul.domain_module.params.GetAllCoinsParam
 import com.rahul.domain_module.params.GetCoinDetailParam
 import com.rahul.domain_module.test.TestDomainCache
 import com.rahul.domain_module.test.TestDomainOkhttpConfig
@@ -21,7 +22,7 @@ class TestGetCoinUseCases : UnitTestUseCases() {
     @Test
     fun `useCase-checkNetworkError`() {
 
-        val data = executeUseCase { getAllCoinsUseCase.buildUseCase(scope = testCoroutineScope) }
+        val data = executeUseCase { getAllCoinsUseCase.buildUseCase(scope = testCoroutineScope,GetAllCoinsParam(1)) }
 
         checkUseCondition("NO_INTERNET", data) { result ->
             if (result is UseCaseWrapper.Error) {
@@ -36,7 +37,10 @@ class TestGetCoinUseCases : UnitTestUseCases() {
     @Test
     fun `useCase-(get all coins)`() {
 
-        val data = executeUseCase { getAllCoinsUseCase.buildUseCase(scope = testCoroutineScope) }
+        val data = executeUseCase {
+            getAllCoinsUseCase.buildUseCase(scope = testCoroutineScope,
+                GetAllCoinsParam(1))
+        }
 
         checkUseCondition("All Coins found!", data) { result ->
             if (result is UseCaseWrapper.Success) {

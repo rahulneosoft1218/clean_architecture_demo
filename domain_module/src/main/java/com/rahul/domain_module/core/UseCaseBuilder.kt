@@ -2,10 +2,16 @@ package com.rahul.domain_module.core
 
 import com.rahul.data_module.source.network.retrofit.ResultWrapper
 import com.rahul.data_module.source.exceptions.ApiException
+import com.rahul.data_module.source.mock.MockDataLoader
 import com.rahul.domain_module.exceptions.DomainExceptions
 import com.rahul.domain_module.exceptions.DomainExceptions.Companion.mapDomainException
+import kotlinx.coroutines.CoroutineScope
 
 open class UseCaseBuilder<Result, Response> {
+
+
+
+
 
     private fun ResultWrapper<ApiException, Result>.mapResponse(useCaseDataMapper: UseCaseDataMapper<Result, Response>): UseCaseWrapper<DomainExceptions, Response> {
 

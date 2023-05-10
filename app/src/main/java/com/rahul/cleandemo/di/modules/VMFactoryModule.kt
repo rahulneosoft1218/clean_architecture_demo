@@ -1,7 +1,7 @@
 package com.rahul.cleandemo.di.modules
 
 import androidx.lifecycle.ViewModelProvider
-import com.rahul.cleandemo.viewModelFactories.CoinViewModelFactory
+ import com.rahul.cleandemo.viewModelFactories.CoinViewModelFactory
 import com.rahul.domain_module.di.DomainModule
 import com.rahul.domain_module.usecases.GetAllCoinsUseCase
 import com.rahul.domain_module.usecases.GetCoinsDetailUseCase
@@ -18,10 +18,10 @@ class VMFactoryModule {
     @Provides
     fun getCoinViewModelFactory(
         getAllCoinsUseCase: GetAllCoinsUseCase,
-        getCoinsDetailUseCase: GetCoinsDetailUseCase
     ): ViewModelProvider.Factory {
-        return CoinViewModelFactory(getAllCoinsUseCase, getCoinsDetailUseCase)
+        return CoinViewModelFactory(getAllCoinsUseCase)
     }
+
 
 
 }

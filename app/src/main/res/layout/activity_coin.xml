@@ -5,15 +5,11 @@
 
     <data>
 
-        <variable
-            name="result"
-            type="String" />
 
 
         <variable
-            name="itemId"
-            type="String" />
-
+            name="model"
+            type="com.rahul.cleandemo.features.CoinListUIModel" />
 
         <variable
             name="viewModel"
@@ -25,19 +21,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="@{()->viewModel.onCoinItemClick(itemId)}"
-            android:padding="10dp"
-            android:text="@{result}"
+            android:clipToPadding="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Hello World!" />
+            app:onPullToRefresh="@{viewModel}"
+            app:onPullToRefreshId="@{model.pullToRefreshId}"
+            app:onPullToRefreshStatus="@{model.refreshFlag}">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="#23A3A3A3"
+                android:padding="15dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_coins" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

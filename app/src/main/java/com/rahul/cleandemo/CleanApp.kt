@@ -17,6 +17,7 @@ class CleanApp : Application() {
         appCache = AppCache.getAppCache(this)
         appComponent = DaggerAppComponent.factory()
             .create(
+                this.applicationContext,
                 baseUrl = "https://api.coingecko.com/",
                 okhttpConfiguration = AppOkhttpConfig(this),
                 appCache = appCache

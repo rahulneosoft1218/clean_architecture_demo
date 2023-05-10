@@ -34,6 +34,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
 
     lintOptions {
@@ -64,6 +65,11 @@ dependencies {
     //viewModel
     implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+
+    //coil-image-loader
+    implementation "io.coil-kt:coil:2.1.0"
+
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
 
 

@@ -15,11 +15,11 @@ import org.junit.After
 import org.junit.Before
 
 
-abstract class UnitTestRepositories : TestDataRepositories("https://api.coingecko.com/") {
+abstract class UnitTestRepositories (private val internetOn : Boolean): TestDataRepositories("https://api.coingecko.com/") {
 
     protected val testCoroutineScope = CoroutineScope(Dispatchers.IO)
     override fun getAppCache() = TestDataCache.getTestDataCache()
-    override fun getOkhttpConfig() = TestDataOkhttpConfig(internetOn = true)
+    override fun getOkhttpConfig() = TestDataOkhttpConfig(internetOn = internetOn)
 
     @Before
     override fun onCreate() {

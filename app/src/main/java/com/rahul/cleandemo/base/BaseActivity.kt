@@ -1,11 +1,13 @@
 package com.rahul.cleandemo.base
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
@@ -36,7 +38,7 @@ abstract class BaseActivity<V : ViewDataBinding>(private val layoutID: Int) : Ap
     fun <VM : ViewModel> createViewModel(
         owner: ViewModelStoreOwner,
         factory: ViewModelProvider.Factory,
-        vmClass: Class<VM>
+        vmClass: Class<VM>,
     ): VM {
         return ViewModelProvider(owner, factory)[vmClass]
     }
@@ -47,7 +49,9 @@ abstract class BaseActivity<V : ViewDataBinding>(private val layoutID: Int) : Ap
         initViewModels((application as CleanApp).appComponent)
         mBinding = DataBindingUtil.setContentView(this@BaseActivity, layoutID)
         mBinding.lifecycleOwner = this@BaseActivity
-        onCreate()
+        if (savedInstanceState == null) {
+            onCreate()
+        }
 
     }
 
@@ -60,13 +64,37 @@ abstract class BaseActivity<V : ViewDataBinding>(private val layoutID: Int) : Ap
         }
     }
 
-    fun mapDomainException(domainExceptions: DomainExceptions,triggerNoInternet : Boolean = true): String {
-        if (triggerNoInternet && domainExceptions.domainErrors == DomainErrors.NO_INTERNET){
+    fun mapDomainException(
+        domainExceptions: DomainExceptions,
+        triggerNoInternet: Boolean = true,
+    ): String {
+        if (triggerNoInternet && domainExceptions.domainErrors == DomainErrors.NO_INTERNET) {
             onNoInternetFound()
             return domainExceptions.message
         }
 
         return domainExceptions.message
+
+    }
+
+
+    inline fun <R, UI> observeResponseData(
+        responseData: LiveData<ResponseData<R, UI>>,
+        crossinline observeSuccess: (R) -> Unit,
+        crossinline observeFailure: (DomainExceptions) -> Unit,
+        crossinline observeUIEvents: (UI) -> Unit,
+    ) {
+        responseData.observe(this) { res ->
+            if (res == null) return@observe
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                when (res) {
+                    is ResponseData.Success -> observeSuccess.invoke(res.data)
+                    is ResponseData.Failed -> observeFailure.invoke(res.domainExceptions)
+                    is ResponseData.UIResponse -> observeUIEvents(res.uiEvents)
+                }
+            },500)
+        }
 
     }
 

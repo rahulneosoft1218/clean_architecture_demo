@@ -42,7 +42,7 @@ sealed class ApiException(val resCode: Int, open val errorMsg: String?) : IOExce
             if (this.cause is ApiException) {
                 apiException = this.cause as ApiException?
             }
-            if (apiException == null && this.cause?.cause is ApiException) {
+            if (apiException is UnknownException && this.cause?.cause is ApiException) {
                 apiException = this.cause?.cause as ApiException?
             }
 

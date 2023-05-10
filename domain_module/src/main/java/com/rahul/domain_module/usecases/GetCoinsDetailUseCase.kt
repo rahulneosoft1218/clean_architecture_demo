@@ -3,6 +3,7 @@ package com.rahul.domain_module.usecases
 import com.rahul.data_module.models.requests.GetCoinDetailRequest
 import com.rahul.data_module.models.response.CoinEntityDetail
 import com.rahul.data_module.repositories.CoinRepository
+import com.rahul.data_module.source.mock.MockDataLoader
 import com.rahul.domain_module.core.UseCaseWithParams
 import com.rahul.domain_module.core.UseCaseWrapper
 import com.rahul.domain_module.exceptions.DomainExceptions
@@ -18,10 +19,14 @@ class GetCoinsDetailUseCase @Inject constructor(private val coinRepository: Coin
 
     private val mapper = GetCoinDetailDataMapper()
 
-    override suspend fun buildUseCase(scope: CoroutineScope, params: GetCoinDetailParam): UseCaseWrapper<DomainExceptions, String> {
+    override suspend fun buildUseCase(
+        scope: CoroutineScope,
+        params: GetCoinDetailParam,
+        mockDataLoader: MockDataLoader?,
+    ): UseCaseWrapper<DomainExceptions, String> {
         return executeUseCase(mapper) {
             val request = GetCoinDetailRequest(params.currency ?: "")
-            coinRepository.getCoinDetail(scope,request)
+            coinRepository.getCoinDetail(scope, request)
         }
     }
 

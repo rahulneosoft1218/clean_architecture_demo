@@ -18,7 +18,7 @@
         android:theme="@style/Theme.CleanDemo"
         tools:targetApi="31">
         <activity
-            android:name=".CoinListActivity"
+            android:name=".features.CoinListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

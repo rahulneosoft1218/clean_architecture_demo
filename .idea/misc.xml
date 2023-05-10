@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/StudioProjects/clean_architecture_demo/app/src/main/res/drawable/rv_divider.xml" value="0.108" />
         <entry key="..\:/StudioProjects/clean_architecture_demo/app/src/main/res/layout/activity_coin.xml" value="0.1921875" />
         <entry key="..\:/StudioProjects/clean_architecture_demo/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/StudioProjects/clean_architecture_demo/app/src/main/res/layout/item_coins.xml" value="0.1921875" />
+        <entry key="..\:/StudioProjects/clean_architecture_demo/app/src/main/res/layout/item_loader.xml" value="0.18802083333333333" />
+        <entry key="..\:/StudioProjects/clean_architecture_demo/app/src/main/res/menu/item_menu.xml" value="0.462406015037594" />
       </map>
     </option>
   </component>

@@ -5,6 +5,7 @@ import com.rahul.data_module.models.requests.GetCoinDetailRequest
 import com.rahul.data_module.models.response.CoinEntity
 import com.rahul.data_module.models.response.CoinEntityDetail
 import com.rahul.data_module.source.exceptions.ApiException
+import com.rahul.data_module.source.mock.MockDataLoader
 import com.rahul.data_module.source.network.INetworkData
 import com.rahul.data_module.source.network.retrofit.ResultWrapper
 import kotlinx.coroutines.CoroutineScope
@@ -17,16 +18,20 @@ class CoinRepository @Inject constructor(private val networkData: INetworkData) 
 
     suspend fun getAllCoins(
         scope: CoroutineScope,
-        request: GetAllCoinRequest
+        request: GetAllCoinRequest,
+        mockDataLoader: MockDataLoader?=null,
     ): ResultWrapper<ApiException, List<CoinEntity>> {
         return executeApi(scope) {
+            if (mockDataLoader != null) {
+                return@executeApi mockResponse<List<CoinEntity>>(mockDataLoader.getMockJSONString())
+            }
             networkData.fetchAllCoins(request)
         }
     }
 
     suspend fun getCoinDetail(
         scope: CoroutineScope,
-        request: GetCoinDetailRequest
+        request: GetCoinDetailRequest,
     ): ResultWrapper<ApiException, CoinEntityDetail> {
         return executeApi(scope) {
             networkData.fetchCoinDetail(request)

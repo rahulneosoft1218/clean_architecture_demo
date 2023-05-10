@@ -30,8 +30,8 @@ class RetrofitApiClient @Inject constructor(
         val defaultCurr = appCache.getCacheString(IAppCache.DEFAULT_CURRENCY)
         return apiService.getAllCoins(
             path = request.path,
-//            vs_currency = request.currency,
-            vs_currency = defaultCurr,
+            vs_currency = request.currency,
+//            vs_currency = defaultCurr,
             order = request.order,
             perPage = request.perPage,
             page = request.page,

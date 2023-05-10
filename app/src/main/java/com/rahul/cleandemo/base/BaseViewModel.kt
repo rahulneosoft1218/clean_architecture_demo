@@ -1,10 +1,7 @@
 package com.rahul.cleandemo.base
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.rahul.domain_module.core.UseCaseWrapper
-import com.rahul.domain_module.exceptions.DomainErrors
 import com.rahul.domain_module.exceptions.DomainExceptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,30 +9,45 @@ import kotlinx.coroutines.launch
 
 abstract class BaseViewModel : ViewModel() {
 
+
     private val jobs = ArrayList<Job>()
 
     fun <R, UI> updateDataState(
         state: MutableLiveData<ResponseData<R, UI>>,
-        data: ResponseData<*, *>
+        data: R,
     ) {
-        state.postValue(data as ResponseData<R, UI>)
+        state.postValue(ResponseData.Success(data) as ResponseData<R, UI>)
+    }
+
+
+    @Suppress("UNCHECKED_CAST")
+    fun <R, UI> updateUIState(
+        state: MutableLiveData<ResponseData<R, UI>>,
+        uiEvents: UI,
+    ) {
+        state.postValue(ResponseData.UIResponse(uiEvents) as ResponseData<R, UI>)
     }
 
     fun <R, UI> updateFailedDataState(
         state: MutableLiveData<ResponseData<R, UI>>,
-        data: ResponseData<R, UI>
+        data: DomainExceptions,
     ) {
-        state.postValue(data)
+        state.postValue(ResponseData.Failed(data))
     }
 
 
-    fun <R, UI> createNewResponseData() =
-        MutableLiveData<ResponseData<R, UI>>().apply { postValue(ResponseData.Init as ResponseData<R, UI>) }
+    fun <R, UI> createResponseData() = MutableLiveData<ResponseData<R, UI>>(null)
+
+    fun <R, UI> MutableLiveData<ResponseData<R, UI>>.mapResponseData(): LiveData<ResponseData<R, UI>> =
+        this
+
+
+
 
 
     protected fun <T> executeUseCaseData(
         useCase: suspend () -> UseCaseWrapper<DomainExceptions, T>,
-        result: (UseCaseWrapper<DomainExceptions, T>) -> Unit
+        result: (UseCaseWrapper<DomainExceptions, T>) -> Unit,
     ) {
         val job = viewModelScope.launch(Dispatchers.IO) {
             result.invoke(useCase.invoke())
@@ -43,20 +55,6 @@ abstract class BaseViewModel : ViewModel() {
         jobs.add(job)
     }
 
-//    fun  <R,E>  checkFailedResponse(
-//        state: MutableLiveData<ResponseData <R,E>>,
-//        domainExceptions: DomainExceptions,
-//        baseUIEvents: BaseUIEvents
-//    ) {
-//        if (domainExceptions.domainErrors.ordinal == DomainErrors.NO_INTERNET.ordinal) {
-//            updateDataState(state, ResponseData.UIEvents(BaseUIEvents.OnNoInternet  as ResponseData.UIEvents<E>))
-//            updateDataState(state, ResponseData.UIEvents<E>(UIEvents.OnNoInternet))
-//        } else {
-//            updateDataState(
-//                state, ResponseData.UIEvents<E>(UIEvents.ShowError(domainExceptions.message))
-//            )
-//        }
-//    }
 
 
     override fun onCleared() {
@@ -66,6 +64,10 @@ abstract class BaseViewModel : ViewModel() {
             }
         }
         super.onCleared()
+    }
+
+    open fun onPullToRefresh(refreshId : Int){
+
     }
 
 
